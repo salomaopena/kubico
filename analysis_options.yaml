@@ -1,0 +1,15 @@
+include: package:lint/analysis_options.yaml
+
+analyzer:
+  language:
+    strict-raw-types: true
+
+linter:
+  rules:
+    # ------ Disable individual rules ----- #
+    #                 ---                   #
+    # Turn off what you don't like.         #
+    # ------------------------------------- #
+
+    # Use parameter order as in json response
+    always_put_required_named_parameters_first: false

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "293882888853",
+    "project_id": "kubicob",
+    "storage_bucket": "kubicob.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:293882888853:android:10081d630c3d0e7391d19c",
+        "android_client_info": {
+          "package_name": "com.fenix.kubico.kubico"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "293882888853-3knnt10i1bn0b0qocj0936vfafr213tc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.fenix.kubico.kubico",
+            "certificate_hash": "a111b65b48aea12b381d8ea287703b1f40993e53"
+          }
+        },
+        {
+          "client_id": "293882888853-a8mqu5tdi0chnkas97itscubqsdp0qds.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYwoeVv1Gh55PRdHcjINWbw_wyFh-lVWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "293882888853-a8mqu5tdi0chnkas97itscubqsdp0qds.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
