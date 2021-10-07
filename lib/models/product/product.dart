@@ -47,6 +47,10 @@ class Product extends ChangeNotifier {
             .map((size) => ItemSize.fromMap(size as Map<String, dynamic>))
             .toList();
 
+  List<Map<String, dynamic>> exportSizeList() {
+    return sizes.map((size) => size.toMap()).toList();
+  }
+
   int get totalStock {
     int stock = 0;
     for (final size in sizes) {

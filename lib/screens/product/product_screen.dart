@@ -51,8 +51,10 @@ class ProductScreen extends StatelessWidget {
           Consumer<ProductManager>(builder: (_, productManager, __) {
             if (productManager.search.isEmpty) {
               return IconButton(
-                icon: Icon(Icons.search,
-                color: Colors.pink,),
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.pink,
+                ),
                 onPressed: () async {
                   final search = await showDialog<String>(
                       context: context,
@@ -64,8 +66,10 @@ class ProductScreen extends StatelessWidget {
               );
             } else {
               return IconButton(
-                icon: Icon(Icons.close,
-                color: Colors.pink,),
+                icon: Icon(
+                  Icons.close,
+                  color: Colors.pink,
+                ),
                 onPressed: () async {
                   productManager.search = '';
                 },
@@ -77,7 +81,7 @@ class ProductScreen extends StatelessWidget {
       body: Consumer<ProductManager>(builder: (_, productManager, __) {
         final filteredProducts = productManager.filteredProducts;
         return ListView.builder(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             itemCount: filteredProducts.length,
             itemBuilder: (_, index) {
               return ProductListTile(product: filteredProducts[index]);
@@ -87,9 +91,12 @@ class ProductScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         foregroundColor: Colors.pink,
         onPressed: () {
-          Get.to(()=>CartScreen());
+          Get.to(() => CartScreen());
         },
-        child: const Icon(Icons.shopping_cart),
+        child: const Icon(
+          Icons.shopping_cart,
+          size: 32,
+        ),
       ),
     );
   }

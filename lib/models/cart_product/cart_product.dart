@@ -9,37 +9,59 @@ class CartProduct extends ChangeNotifier {
   late String productId;
   late int quantity;
   late String size;
-  late Product product;
+  num? fixedPrice;
+  late Product _product;
 
-  CartProduct.fromDocument(DocumentSnapshot snapshot){
+  Product get product => _product;
+
+  set product(Product value) {
+    _product = value;
+    notifyListeners();
+  }
+
+  CartProduct.fromDocument(DocumentSnapshot snapshot) {
     id = snapshot.id;
     productId = snapshot.get('product') as String;
     quantity = snapshot.get('quantity') as int;
     size = snapshot.get('size') as String;
 
-     firestore.doc('product/$productId').get().then((document)  {
+    firestore.doc('product/$productId').get().then((document) {
       product = Product.fromDocument(document);
       notifyListeners();
     });
   }
 
-  CartProduct.fromProduct(this.product) {
-    if (product != null) {
-      productId = product.id as String;
-      quantity = 1;
-      size = product.selectedSize.name;
-    }
+  CartProduct.fromProduct(this._product) {
+    productId = product.id as  String;
+    quantity = 1;
+    size = product.selectedSize.name;
+  }
+
+  CartProduct.fromMap(Map<String, dynamic> map) {
+    productId = map['pid'] as String;
+    quantity = map['quantity'] as int;
+    size = map['size'] as String;
+    fixedPrice = map['fixedPrice'] as num;
+    firestore.doc('product/$productId').get().then((document) {
+      product = Product.fromDocument(document);
+    });
+  }
+
+  Map<String, dynamic> toOrderItemMap() {
+    return {
+      'pid': productId,
+      'quantity': quantity,
+      'size': size,
+      'fixedPrice': fixedPrice ?? unityPrice,
+    };
   }
 
   ItemSize get itemSize {
-    //if (product == null) {
-    // return null;
-    //} else {
     return product.findSize(size);
-    //}
   }
 
   num get unityPrice {
+    Product product = this.product;
     if (product == null) return 0;
     return itemSize.price;
   }

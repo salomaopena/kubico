@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:geocode/geocode.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:kubico/models/cart_product/cart_product.dart';
 import 'package:kubico/models/product/product.dart';
+import 'package:kubico/models/users/user_address.dart';
 import 'package:kubico/models/users/user_manager.dart';
 import 'package:kubico/models/users/user_model.dart';
 
 class CartManager extends ChangeNotifier {
   List<CartProduct> items = []..length;
   late UserModel user;
-  //Address address;
+  UserAddress? address;
 
   num productsPrice = 0.0;
   num deliveryPrice = 0.0;
@@ -35,10 +37,10 @@ class CartManager extends ChangeNotifier {
     user = userManager.user;
     productsPrice = 0.0;
     items.clear();
-    //removeAddress();
+    removeAddress();
     if (user != null) {
       _loadCartItems();
-      // _loadUserAddress();
+      _loadUserAddress();
     }
   }
 
@@ -50,13 +52,14 @@ class CartManager extends ChangeNotifier {
         .toList();
   }
 
-  /* Future<void> _loadUserAddress() async {
+  Future<void> _loadUserAddress() async {
     if (user.address != null &&
-        await calculateDelivey(user.address.latitude, user.address.longitude)) {
+        await calculateDelivey(user.address.latitude as double,
+            user.address.longitude as double)) {
       address = user.address;
       notifyListeners();
     }
-  }*/
+  }
 
   void addToCart(Product product) {
     try {
@@ -122,49 +125,106 @@ class CartManager extends ChangeNotifier {
     return true;
   }
 
-  //bool get isAddressValid => address != null && deliveryPrice > 0.0;
+  void clear() {
+    for (final cartProduct in items) {
+      user.cartReference.doc(cartProduct.id).delete();
+    }
+    items.clear();
+    notifyListeners();
+  }
 
-  /* Future<void> getAddress(String cep) async {
+  bool get isAddressValid => address != null && deliveryPrice > 0.0;
+
+  Future<void> getAddress(
+      {required double latitude, required double longitude}) async {
     loading = true;
-    final cepAbertoService = CEPAbertoService();
+    GeoCode geoCode = GeoCode();
     try {
-      final cepAbertoAddress = await cepAbertoService.getAddressFromCep(cep);
-      if (cepAbertoAddress != null) {
-        address = Address(
-          street: cepAbertoAddress.logradouro,
-          district: cepAbertoAddress.bairro,
-          zipCode: cepAbertoAddress.cep,
-          city: cepAbertoAddress.cidade.nome,
-          states: cepAbertoAddress.estado.sigla,
-          latitude: cepAbertoAddress.longitude,
-          longitude: cepAbertoAddress.longitude,
-        );
+      final add = await geoCode.reverseGeocoding(
+          latitude: latitude, longitude: longitude);
+
+      if (add != null) {
+        /* address = UserAddress(
+          street: add.streetAddress,
+          district: add.streetAddress,
+          city: add.city,
+          province: add.region,
+          country: add.countryName,
+          latitude: lat,
+          longitude: long,
+        );*/
+
+        debugPrint('Street: ${add.streetAddress}');
+        debugPrint('District: ${add.streetAddress}');
+        debugPrint('City: ${add.city}');
+        debugPrint('Province: ${add.region}');
+        debugPrint('Country: ${add.countryName}');
+        debugPrint('Lat: ${latitude}');
+        debugPrint('Long: ${longitude}');
+        debugPrint('Long: ${add.geoNumber}');
+        debugPrint('Postal: ${add.postal}');
       }
       loading = false;
     } catch (error) {
       loading = false;
       debugPrint(error.toString());
-      return Future.error('CEP inválido!!!!');
+      return Future.error('Localização inválida!!');
     }
-  }*/
+  }
 
-  /*Future<void> setAddress(Address address) async {
+  Future<void> setAddress(UserAddress address) async {
     loading = true;
     this.address = address;
-    if (await calculateDelivey(address.latitude, address.longitude)) {
+    if (await calculateDelivey(
+        address.latitude as double, address.longitude as double)) {
       user.setAddress(address);
       loading = false;
     } else {
       loading = false;
       return Future.error('Endereço fora do raio de entrega :(');
     }
-  }*/
+  }
 
-  /*void removeAddress() {
+  void removeAddress() {
     address = null;
     deliveryPrice = 0.0;
     notifyListeners();
-  }*/
+  }
+
+  Future<Position> determinePosition() async {
+    bool isLocationServiceEnabled;
+    LocationPermission permission;
+
+    isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    isLocationServiceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!isLocationServiceEnabled) {
+      await Geolocator.openLocationSettings();
+      return Future.error('Os serviços de localização estão desactivados');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('As permissões de localização são negadas');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'As permissões de localização são permanentemente negadas, não podemos pedir permissões.');
+    }
+
+    Position position = await Geolocator.getCurrentPosition();
+
+    if (position != null) {
+      await getAddress(
+          latitude: position.latitude, longitude: position.longitude);
+    }
+
+    return position;
+  }
 
   Future<bool> calculateDelivey(double latitude, double longitude) async {
     final DocumentSnapshot documentSnapshot =

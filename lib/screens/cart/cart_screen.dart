@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kubico/models/cart_product/cart_manager.dart';
+import 'package:kubico/screens/address/address_screen.dart';
 import 'package:kubico/screens/cart/components/cart_tile.dart';
 import 'package:kubico/screens/login/components/login_card.dart';
 import 'package:provider/provider.dart';
@@ -47,7 +48,7 @@ class CartScreen extends StatelessWidget {
               PriceCard(
                 textButton: 'Continuar para a entrega',
                 onPressed: cartManager.isCartValid? (){
-                  //Get.to(()=>const AddressScreen());
+                  Get.to(()=> AddressScreen());
                 }:null,
               ),
             ],

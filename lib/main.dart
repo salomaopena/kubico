@@ -8,7 +8,9 @@ import 'package:get/get_navigation/src/routes/transitions_type.dart';
 import 'package:kubico/models/cart_product/cart_manager.dart';
 import 'package:kubico/models/category/category_manager.dart';
 import 'package:kubico/models/home/home_manager.dart';
+import 'package:kubico/models/orders/orders_manager.dart';
 import 'package:kubico/models/product/product_manager.dart';
+import 'package:kubico/models/stores/stores_manager.dart';
 import 'package:kubico/screens/base/base_screen.dart';
 import 'package:kubico/utils/theme.dart';
 import 'package:provider/provider.dart';
@@ -38,12 +40,21 @@ class MyApp extends StatelessWidget {
           lazy: false,
         ),
         ChangeNotifierProvider(
+          create: (_) => StoresManager(),
+        ),
+        ChangeNotifierProvider(
           create: (_) => ProductManager(),
           lazy: false,
         ),
         ChangeNotifierProvider(
           create: (_) => HomeManager(),
           lazy: false,
+        ),
+        ChangeNotifierProxyProvider<UserManager,OrdersManager>(
+          create: (_) => OrdersManager(),
+          lazy: false,
+          update: (_,userManager, ordersManager)=>
+          ordersManager..updateUser(userManager.user),
         ),
         ChangeNotifierProxyProvider<UserManager, CartManager>(
           create: (_) => CartManager(),

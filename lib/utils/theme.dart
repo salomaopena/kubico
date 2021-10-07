@@ -48,7 +48,6 @@ class EcommerceTheme {
       primaryColorLight: AppColors.lightGray,
       scaffoldBackgroundColor: AppColors.primaryColor,
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      accentColor: AppColors.red,
       bottomAppBarColor: AppColors.lightGray,
       backgroundColor: AppColors.background,
       dialogBackgroundColor: AppColors.backgroundLight,
@@ -149,7 +148,7 @@ class EcommerceTheme {
       buttonTheme: theme.buttonTheme.copyWith(
         minWidth: 50,
         buttonColor: AppColors.red,
-      ),
+      ), colorScheme: ColorScheme.fromSwatch().copyWith(secondary: AppColors.red),
     );
   }
 }

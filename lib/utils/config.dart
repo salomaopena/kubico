@@ -13,10 +13,10 @@ class ContestTabHeader extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => 52.0;
+  double get maxExtent => 35.0;
 
   @override
-  double get minExtent => 52.0;
+  double get minExtent => 35.0;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) {

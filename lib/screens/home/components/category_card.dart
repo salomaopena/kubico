@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kubico/models/category/category.dart';
 import 'package:kubico/screens/product/product_category.dart';
+import 'package:kubico/utils/theme.dart';
 import 'package:provider/provider.dart';
 
 class CategoryCard extends StatelessWidget {
@@ -11,36 +12,37 @@ class CategoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MQuery = MediaQuery.of(context).size;
     return ChangeNotifierProvider.value(
       value: category,
       child: GestureDetector(
-        onTap: () {
-          Get.to(() => ProductCategory(category: category));
-        },
-        child: AspectRatio(
-          aspectRatio: 2,
-          child: Container(
-            margin: EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(15),
-                image: DecorationImage(
-                    image: NetworkImage(category.image as String),
-                    fit: BoxFit.cover)),
-            child: Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(15),
-                  color:Colors.black.withOpacity(.2)),
-              child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Text(
-                    category.name,
+        onTap: () => Get.to(() => ProductCategory(category: category)),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          width: MQuery.width * 0.5,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 30,
+                child: Image.network(
+                  category.image as String,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              Expanded(flex: 10, child: SizedBox(width: 10)),
+              Expanded(
+                flex: 60,
+                child: Text(category.name,
                     style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15),
-                  )),
-            ),
+                        color: AppColors.black,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 14)),
+              ),
+            ],
           ),
         ),
       ),

@@ -95,7 +95,7 @@ class ProductCategory extends StatelessWidget {
                     'Nenhum produto cadastrado para a categoria de ${category.name}');
           }
           return ListView.builder(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: filteredProducts.length,
               itemBuilder: (_, index) {
                 return ProductListTile(product: filteredProducts[index]);

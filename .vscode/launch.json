@@ -1,0 +1,16 @@
+{
+      "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "kubico",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "kubico (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        }
+    ]
+}

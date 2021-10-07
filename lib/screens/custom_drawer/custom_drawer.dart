@@ -47,6 +47,19 @@ class CustomDrawer extends StatelessWidget {
                 title: "Lojas",
                 page: 4,
               ),
+              const Divider(
+                indent: 32,
+              ),
+              const DrawerTile(
+                iconData: Icons.settings,
+                title: "Definições",
+                page: 5,
+              ),
+              const DrawerTile(
+                iconData: Icons.description,
+                title: "Sobre..",
+                page: 6,
+              ),
             ],
           ),
         ],

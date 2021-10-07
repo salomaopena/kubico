@@ -19,7 +19,7 @@ class SectionTitle extends StatelessWidget {
     return Container(
       color: AppColors.primaryColor,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -29,8 +29,8 @@ class SectionTitle extends StatelessWidget {
                 title,
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  fontSize: 17,
-                  color: Colors.pink
+                  fontSize: 16,
+                  color: AppColors.black
                 ),
               ),
             ),

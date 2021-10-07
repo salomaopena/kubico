@@ -1,16 +1,17 @@
 // @dart=2.9
+import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoder/geocoder.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:kubico/models/users/user_address.dart';
 import 'package:kubico/models/users/user_model.dart';
 import 'package:kubico/utils/firebase_errors.dart';
 
 class UserManager extends ChangeNotifier {
   UserManager() {
-    _loadCurrentUser();
+    retriviewUsers();
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -45,7 +46,7 @@ class UserManager extends ChangeNotifier {
           await auth.signInWithEmailAndPassword(
               email: user.email, password: user.password);
 
-      await _loadCurrentUser(firestoreUser: userCredential.user);
+      await retriviewUsers(firestoreUser: userCredential.user);
 
       onSuccess();
     } on FirebaseAuthException catch (error) {
@@ -68,7 +69,7 @@ class UserManager extends ChangeNotifier {
       try {
         final UserCredential userCredential =
             await auth.signInWithCredential(authCredential);
-        await _loadCurrentUser(firestoreUser: userCredential.user);
+        await retriviewUsers(firestoreUser: userCredential.user);
 
         User user = auth.currentUser;
 
@@ -85,12 +86,6 @@ class UserManager extends ChangeNotifier {
     }
   }
 
-  Future<Address> convertCoordinateToAddress(Coordinates coordinates) async {
-    var address =
-        await Geocoder.local.findAddressesFromCoordinates(coordinates);
-    return address.first;
-  }
-
   Future<void> signUp(
       {@required UserModel userModel,
       @required Function onFail,
@@ -102,6 +97,16 @@ class UserManager extends ChangeNotifier {
               email: userModel.email, password: userModel.password);
 
       userModel.id = userCredential.user.uid;
+      userModel.address = UserAddress(
+        street: 'default',
+        district: 'default',
+        city: 'default',
+        province: 'default',
+        country: 'Angola',
+        latitude: 1.1,
+        longitude: 1.1,
+      );
+
       user = userModel;
 
       await user.saveData();
@@ -113,15 +118,15 @@ class UserManager extends ChangeNotifier {
     loading = false;
   }
 
-  Future<void> _loadCurrentUser({User firestoreUser}) async {
+  Future<void> retriviewUsers({User firestoreUser}) async {
     final User currentUser = firestoreUser ?? auth.currentUser;
-
     if (currentUser != null) {
-      final DocumentSnapshot docUser =
-          await firestore.collection("users").doc(currentUser.uid).get();
-      user = UserModel.fromDocument(docUser);
-
-      notifyListeners();
+      await firestore.collection("users").get().then((querySnapshot) {
+        querySnapshot.docs.forEach((result) {
+          user = UserModel.fromDocument(result);
+          notifyListeners();
+        });
+      });
     }
   }
 
@@ -131,16 +136,4 @@ class UserManager extends ChangeNotifier {
     user = null;
     notifyListeners();
   }
-
-/*Future<void> _loadCurrentUser({User? user}) async {
-    final User currentUser = user ?? auth.currentUser!;
-    if (currentUser != null) {
-      final DocumentSnapshot<Map<String, dynamic>> docUser =
-      await firestore.collection("users").doc(currentUser.uid).get();
-      this.user = UserModel.fromDocument(docUser);
-      debugPrint(this.user!.nome);
-      notifyListeners();
-    }
-    //notifyListeners();
-  }*/
 }

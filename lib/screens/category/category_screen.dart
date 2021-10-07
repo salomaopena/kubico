@@ -34,7 +34,8 @@ class CategoryScreen extends StatelessWidget {
                     Get.to(()=>ProductCategory(category:categoryManager.categories[index]));
                   },
                   child: Card(
-                    margin: EdgeInsets.only(top: 4, left: 8, right: 8, bottom: 4 ),
+                    clipBehavior: Clip.antiAlias,
+                    margin: EdgeInsets.only(top: 4, left: 16, right: 16, bottom: 4 ),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     elevation: 0,
                     color: AppColors.white,
@@ -55,8 +56,8 @@ class CategoryScreen extends StatelessWidget {
                           child: Text(
                             categoryManager.categories[index].name,
                             style: TextStyle(
-                              fontSize: 17, fontWeight: FontWeight.w700,
-                              color: Colors.grey[700],
+                              fontSize: 15, fontWeight: FontWeight.w500,
+                              color: AppColors.black,
                             ),
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,

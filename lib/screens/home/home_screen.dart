@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:kubico/models/cart_product/cart_manager.dart';
@@ -22,6 +23,7 @@ class HomeScrenn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final MQuery = MediaQuery.of(context).size;
     return Scaffold(
       drawer: CustomDrawer(),
       appBar: AppBar(
@@ -64,37 +66,31 @@ class HomeScrenn extends StatelessWidget {
                 return Column(
                   children: [
                     HomeBanner(),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 8),
                     SectionTitle(
-                      title: "Nossa marca",
+                      title: "Nossos produtos",
                       press: () {},
                       subtitle: '',
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: 8),
                     Consumer<CategoryManager>(
                         builder: (_, categoryManager, __) {
                       return Container(
-                        height: 100,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: ListView.builder(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                itemCount: categoryManager.categories.length,
-                                itemBuilder: (context, index) {
-                                  return CategoryCard(
-                                    category: categoryManager.categories[index],
-                                  );
-                                },
-                              ),
-                            )
-                          ],
+                        height: MQuery.height * 0.1,
+                        child: ListView.separated(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          scrollDirection: Axis.horizontal,
+                          itemCount: categoryManager.categories.length,
+                          itemBuilder: (context, index) {
+                            return CategoryCard(
+                              category: categoryManager.categories[index],
+                            );
+                          },
+                          separatorBuilder: (_, __) => SizedBox(width: 10),
                         ),
                       );
                     }),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                   ],
                 );
               }, childCount: 1),
@@ -104,9 +100,9 @@ class HomeScrenn extends StatelessWidget {
               floating: true,
               delegate: ContestTabHeader(
                 SectionTitle(
-                  title: "Novidade da semana",
+                  title: "Oferta exclusiva",
                   press: () {},
-                  subtitle: '',
+                  subtitle: 'Nossos produtos',
                 ),
               ),
             ),
@@ -114,41 +110,88 @@ class HomeScrenn extends StatelessWidget {
         },
         body: Consumer<ProductManager>(builder: (_, productManager, __) {
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: StaggeredGridView.countBuilder(
               padding: EdgeInsets.zero,
-              crossAxisCount: 2,
+              crossAxisCount: 4,
               crossAxisSpacing: 10,
-              mainAxisSpacing: 12,
+              mainAxisSpacing: 10,
               itemCount: productManager.filteredProducts.length,
               itemBuilder: (_, index) {
                 final product = productManager.filteredProducts[index];
                 return GestureDetector(
-                  onTap: (){
+                  onTap: () {
                     if (product != null) {
-                      final productFound = productManager.findProductById(product.id as String);
+                      final productFound =
+                          productManager.findProductById(product.id as String);
                       if (productFound != null) {
-                        Get.to(() => ProductDetailScreen(product: productFound));
+                        Get.to(
+                            () => ProductDetailScreen(product: productFound));
                       }
                     }
                   },
                   child: Container(
                     decoration: BoxDecoration(
                         color: Colors.transparent,
-                        borderRadius: BorderRadius.all(Radius.circular(15))),
+                        borderRadius: BorderRadius.all(Radius.circular(8))),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
-                      child: FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
-                        image: product.images.first,
-                        fit: BoxFit.fill,
+                      clipBehavior: Clip.antiAlias,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        color: Colors.white,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: FadeInImage.memoryNetwork(
+                                  placeholder: kTransparentImage,
+                                  image: product.images.first,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              product.name,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: AppColors.black,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'A partir de',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                  color: Colors.grey[700],
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Text(
+                              'AOA ${product.basePrice.toStringAsFixed(2)}',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.pink,
+                                fontWeight: FontWeight.w600
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 );
               },
               staggeredTileBuilder: (index) =>
-                  new StaggeredTile.count(1, index.isEven ? 1.7 : 1.3),
+                  new StaggeredTile.count(2, index.isEven ? 2.5 : 1.5),
+              //new StaggeredTile.count(1, index.isEven ? 1.7 : 1.3),
             ),
           );
         }),

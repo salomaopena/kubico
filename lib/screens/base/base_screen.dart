@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:kubico/models/page_manager/page_manager.dart';
 import 'package:kubico/models/users/user_manager.dart';
+import 'package:kubico/screens/about/about_screen.dart';
 import 'package:kubico/screens/category/category_screen.dart';
 import 'package:kubico/screens/custom_drawer/custom_drawer.dart';
 import 'package:kubico/screens/home/home_screen.dart';
+import 'package:kubico/screens/orders/orders_screen.dart';
 import 'package:kubico/screens/product/product_screen.dart';
+import 'package:kubico/screens/stores/stores_screen.dart';
 import 'package:provider/provider.dart';
 
 class BaseScreen extends StatefulWidget {
@@ -28,24 +31,15 @@ class _BaseScreenState extends State<BaseScreen> {
               HomeScrenn(),
               CategoryScreen(),
               ProductScreen(),
+              OrdersScreen(),
+              StoresSreen(),
               Scaffold(
                 drawer: CustomDrawer(),
                 appBar: AppBar(
-                  title: const Text('Home 3'),
+                  title: const Text('Definições'),
                 ),
               ),
-              Scaffold(
-                drawer: CustomDrawer(),
-                appBar: AppBar(
-                  title: const Text('Home 4'),
-                ),
-              ),
-              Scaffold(
-                drawer: CustomDrawer(),
-                appBar: AppBar(
-                  title: const Text('Home 5'),
-                ),
-              ),
+              AboutScreen(),
             ],
           );
         },

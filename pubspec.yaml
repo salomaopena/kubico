@@ -20,6 +20,8 @@ version: 1.0.0+1
 environment:
   sdk: ">=2.12.0 <3.0.0"
 
+
+
 dependencies:
   flutter:
     sdk: flutter
@@ -28,7 +30,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
-  cloud_firestore: ^2.5.0
+  cloud_firestore: ^2.5.3
   firebase_auth: ^3.0.2
   firebase_storage: ^10.0.2
   firebase_core: ^1.5.0
@@ -46,13 +48,27 @@ dependencies:
   dio: ^4.0.0
   brasil_fields: ^1.1.4
   geolocator: ^7.6.0
-  geocoder: ^0.2.1
+  geocode: ^1.0.1
   google_sign_in: ^5.1.0
   font_awesome_flutter: ^9.1.0
+  flutter_signin_button: ^2.0.0
+  url_launcher: ^6.0.12
+  map_launcher: ^2.1.1
+  flutter_svg: ^0.22.0
+  flip_card: ^0.5.0
+  credit_card_type_detector: ^2.0.0
+  keyboard_actions: ^3.4.4
+  cloud_functions: ^3.0.4
+  firebase_messaging: ^10.0.8
+  another_flushbar: ^1.10.24
+
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  linter: ^1.12.0
+
+
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -67,8 +83,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+    - assets/images/fenix.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
