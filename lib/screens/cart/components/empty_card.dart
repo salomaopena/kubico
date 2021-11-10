@@ -21,6 +21,7 @@ class EmptyCard extends StatelessWidget {
             size: 80.0,
             color: AppColors.pink,
           ),
+          const SizedBox(height: 10),
           Text(
             title as String,
             textAlign: TextAlign.center,

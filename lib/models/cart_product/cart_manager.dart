@@ -144,25 +144,15 @@ class CartManager extends ChangeNotifier {
           latitude: latitude, longitude: longitude);
 
       if (add != null) {
-        /* address = UserAddress(
+        address = UserAddress(
           street: add.streetAddress,
           district: add.streetAddress,
           city: add.city,
           province: add.region,
           country: add.countryName,
-          latitude: lat,
-          longitude: long,
-        );*/
-
-        debugPrint('Street: ${add.streetAddress}');
-        debugPrint('District: ${add.streetAddress}');
-        debugPrint('City: ${add.city}');
-        debugPrint('Province: ${add.region}');
-        debugPrint('Country: ${add.countryName}');
-        debugPrint('Lat: ${latitude}');
-        debugPrint('Long: ${longitude}');
-        debugPrint('Long: ${add.geoNumber}');
-        debugPrint('Postal: ${add.postal}');
+          latitude: latitude,
+          longitude: longitude,
+        );
       }
       loading = false;
     } catch (error) {

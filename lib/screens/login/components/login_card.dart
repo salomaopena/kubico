@@ -11,6 +11,7 @@ class LoginCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
+        elevation: 0,
         margin: const EdgeInsets.all(8),
         child: Padding(
           padding: const EdgeInsets.all(16),

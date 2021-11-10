@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:kubico/models/cart_product/cart_product.dart';
@@ -24,7 +25,28 @@ class CartTile extends StatelessWidget {
               SizedBox(
                 height: 80,
                 width: 80,
-                child: Image.network(cartProduct.product.images.first),
+                child: CachedNetworkImage(
+                  imageUrl: cartProduct.product.images.first,
+                  fit: BoxFit.cover,
+                  filterQuality: FilterQuality.medium,
+                  progressIndicatorBuilder: (_,
+                      __,
+                      DownloadProgress
+                      downloadProgress) =>
+                      Center(
+                          child: CircularProgressIndicator(
+                            value: downloadProgress.progress,
+                            valueColor:
+                            const AlwaysStoppedAnimation(
+                                Colors.pink),
+                          )),
+                  errorWidget: (_, __, ___) => Image.asset(
+                    'images/logo.png',
+                    filterQuality: FilterQuality.high,
+                    isAntiAlias: true,
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
               Expanded(
                 child: Padding(

@@ -37,12 +37,27 @@ class OrderTile extends StatelessWidget {
               ],
             ),
             const SizedBox(width: 10),
-            Text(
-              'Em transporte',
-              style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                  color: Colors.pink),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  order.statusText,
+                  style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14,
+                      color: order.status.contains('Cancelado')
+                          ? Colors.red
+                          : Colors.pink),
+                ),
+                SizedBox(height: 4),
+                Text(
+                  order.dateText,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 12,
+                      color: Colors.black),
+                ),
+              ],
             )
           ],
         ),

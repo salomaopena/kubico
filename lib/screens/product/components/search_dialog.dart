@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SearchDialog extends StatelessWidget {
   const SearchDialog(this.initialText);
@@ -17,8 +18,9 @@ class SearchDialog extends StatelessWidget {
               initialValue: initialText,
               textInputAction: TextInputAction.search,
               autofocus: true,
-              style: TextStyle(
+              style: GoogleFonts.roboto(
                 color: Colors.grey[700],
+                fontSize: 15,
                 fontWeight: FontWeight.w500,
               ),
               decoration: InputDecoration(

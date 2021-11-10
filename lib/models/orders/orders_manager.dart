@@ -12,12 +12,14 @@ class OrdersManager extends ChangeNotifier {
 
   void updateUser(UserModel user) {
     this.user = user;
-orders.clear();
-      _subscription?.cancel();
+    orders.clear();
+    _subscription?.cancel();
     if (user != null) {
       _listenToOrders();
     }
   }
+
+
 
   void _listenToOrders() {
     _subscription = firestore
@@ -32,6 +34,8 @@ orders.clear();
       notifyListeners();
     });
   }
+
+
 
   @override
   void dispose() {

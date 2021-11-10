@@ -1,11 +1,12 @@
-
+import 'package:another_flushbar/flushbar.dart';
 import 'package:carousel_pro/carousel_pro.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/route_manager.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kubico/models/cart_product/cart_manager.dart';
 import 'package:kubico/models/product/product.dart';
 import 'package:kubico/models/users/user_manager.dart';
-import 'package:kubico/screens/cart/cart_screen.dart';
 import 'package:kubico/screens/login/login_screen.dart';
 import 'package:kubico/screens/product_details/components/size_widget.dart';
 import 'package:kubico/utils/theme.dart';
@@ -25,8 +26,8 @@ class ProductDetailScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text(
             product.name,
-            style: TextStyle(
-              fontSize: 20,
+            style: GoogleFonts.roboto(
+              fontSize: 18,
               color: Colors.pink,
               fontWeight: FontWeight.w700,
             ),
@@ -93,28 +94,37 @@ class ProductDetailScreen extends StatelessWidget {
                     ),
                   ),
                   Text(product.description,
-                      style: TextStyle(
-                        fontSize: 14,
-                          color: Colors.grey[900]
-                      )),
-                  Padding(
-                    padding: EdgeInsets.only(top: 16, bottom: 8),
-                    child: Text(
-                      'Tamanhos',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                          color: Colors.grey[800]
+                      style: TextStyle(fontSize: 14, color: Colors.grey[900])),
+                  if (product.deleted)
+                    const Padding(
+                        padding: const EdgeInsets.only(top: 16, bottom: 8),
+                        child: const Text(
+                          'Este produto não está mais disponível',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.red,
+                          ),
+                        ))
+                  else ...[
+                    Padding(
+                      padding: EdgeInsets.only(top: 16, bottom: 8),
+                      child: Text(
+                        'Tamanhos',
+                        style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.grey[800]),
                       ),
                     ),
-                  ),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: product.sizes.map((size) {
-                      return SizeWidget(size: size);
-                    }).toList(),
-                  ),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: product.sizes.map((size) {
+                        return SizeWidget(size: size);
+                      }).toList(),
+                    ),
+                  ],
                   const SizedBox(height: 20),
                   if (product.hasStock)
                     Consumer2<UserManager, Product>(
@@ -127,10 +137,9 @@ class ProductDetailScreen extends StatelessWidget {
                           enableFeedback: true,
                           onSurface: AppColors.primaryColor,
                           textStyle: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: EcommerceTheme.fontName
-                          ),
+                              fontSize: 18,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: EcommerceTheme.fontName),
                           backgroundColor: AppColors.pink,
                           shape: const RoundedRectangleBorder(
                               borderRadius:
@@ -142,17 +151,37 @@ class ProductDetailScreen extends StatelessWidget {
                                   context
                                       .read<CartManager>()
                                       .addToCart(product);
-                                  Get.to(() => CartScreen());
+                                  Flushbar(
+                                    icon: Icon(
+                                      FontAwesomeIcons.shoppingCart,
+                                      color: AppColors.success,
+                                    ),
+                                    title: 'Adicionar ao carrinho',
+                                    titleColor: AppColors.success,
+                                    duration: Duration(seconds: 3),
+                                    backgroundColor: AppColors.primaryColor,
+                                    messageColor: AppColors.black,
+                                    messageText: Text(
+                                      'Comprou ${product.name}',
+                                      style: TextStyle(
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    flushbarPosition: FlushbarPosition.TOP,
+                                    isDismissible: true,
+                                  ).show(context);
                                 } else {
-                                  Get.to(()=>LoginScreen());
+                                  Get.to(() => LoginScreen());
                                 }
                               }
                             : null,
                         child: !userManager.loading
-                            ? Text(userManager.isLoggedIn
-                                ? 'Adicionar ao carrinho'
-                                : 'Entre para comprar',
-                        )
+                            ? Text(
+                                userManager.isLoggedIn
+                                    ? 'Adicionar ao carrinho'
+                                    : 'Entre para comprar',
+                              )
                             : const Center(
                                 child: CircularProgressIndicator(
                                   valueColor:

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kubico/models/page_manager/page_manager.dart';
 import 'package:kubico/models/users/user_manager.dart';
 import 'package:kubico/screens/login/login_screen.dart';
@@ -19,29 +20,32 @@ class CustomDrawerHeader extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              const Flexible(
+              Flexible(
+                flex: 70,
                   child: Text(
-                'Kubico de\nBeleza',
-                style: TextStyle(fontSize: 32,
+                'Kubico da \nBeleza',
+                style: GoogleFonts.pacifico(fontSize: 35,
                     fontWeight: FontWeight.w900,
                   color: Colors.pink
                 ),
               )),
               Flexible(
+                flex: 15,
                 child: Text(
                   userManager.user != null
                       ? 'Olá, ${userManager.user?.name}'
                       : 'Olá, Anónimo',
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
-                  style: const TextStyle(
+                  style: GoogleFonts.roboto(
                     fontWeight: FontWeight.w500,
-                    fontSize: 18,
+                    fontSize: 16,
                     color: AppColors.black
                   ),
                 ),
               ),
               Flexible(
+                flex: 15,
                 child: GestureDetector(
                   onTap: () {
                     if (userManager.isLoggedIn) {
@@ -53,12 +57,12 @@ class CustomDrawerHeader extends StatelessWidget {
                   },
                   child: Text(
                     userManager.isLoggedIn ? 'Sair' : 'Entre ou cadastre-se',
-                    style: TextStyle(
+                    style: GoogleFonts.roboto(
                         color: userManager.isLoggedIn
                             ? AppColors.red
                             : Colors.pink,
                         fontWeight: FontWeight.w500,
-                        fontSize: 16),
+                        fontSize: 18),
                   ),
                 ),
               )

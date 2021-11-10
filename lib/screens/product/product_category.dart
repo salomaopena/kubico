@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kubico/models/category/category.dart';
 import 'package:kubico/models/product/product_manager.dart';
 import 'package:kubico/screens/cart/cart_screen.dart';
@@ -24,8 +25,8 @@ class ProductCategory extends StatelessWidget {
               if (productManager.search.isEmpty) {
                 return Text(
                   category.name,
-                  style: TextStyle(
-                    fontSize: 20,
+                  style: GoogleFonts.roboto(
+                    fontSize: 18,
                     color: Colors.pink,
                     fontWeight: FontWeight.w700,
                   ),
@@ -107,7 +108,10 @@ class ProductCategory extends StatelessWidget {
           onPressed: () {
             Get.to(() => CartScreen());
           },
-          child: const Icon(Icons.shopping_cart),
+          child: const Icon(
+            Icons.shopping_cart,
+            size: 32,
+          ),
         ),
       ),
     );

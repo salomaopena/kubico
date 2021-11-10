@@ -1,5 +1,8 @@
 // @dart=2.9
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:kubico/models/users/user_address.dart';
 
 class UserModel {
@@ -24,6 +27,7 @@ class UserModel {
       id = doc.id;
       name = doc.get('name') as String;
       email = doc.get('email') as String;
+      phone = doc.get('phone') as String;
       address = UserAddress.fromMap(doc.get('address') as Map<String, dynamic>);
     }
   }
@@ -32,6 +36,7 @@ class UserModel {
       FirebaseFirestore.instance.doc("users/$id");
 
   CollectionReference get cartReference => firestoreRef.collection("cart");
+  CollectionReference get tokenReference => firestoreRef.collection("tokens");
 
   Future<void> saveData() async {
     await firestoreRef.set(toMap());
@@ -49,6 +54,15 @@ class UserModel {
   void setAddress(UserAddress address) {
     this.address = address;
     saveData();
+  }
+
+  Future<void> saveToken() async {
+    final token = await FirebaseMessaging.instance.getToken();
+    tokenReference.doc(token).set({
+      'token': token,
+      'updatedAt': FieldValue.serverTimestamp(),
+      'platform': Platform.operatingSystem
+    });
   }
 
   @override

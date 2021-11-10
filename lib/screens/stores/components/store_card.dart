@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
@@ -93,9 +94,27 @@ class StoreCard extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                Image.network(
-                  stores.image,
+                CachedNetworkImage(
+                  imageUrl: stores.image,
                   fit: BoxFit.cover,
+                  filterQuality: FilterQuality.medium,
+                  progressIndicatorBuilder: (_,
+                      __,
+                      DownloadProgress
+                      downloadProgress) =>
+                      Center(
+                          child: CircularProgressIndicator(
+                            value: downloadProgress.progress,
+                            valueColor:
+                            const AlwaysStoppedAnimation(
+                                Colors.pink),
+                          )),
+                  errorWidget: (_, __, ___) => Image.asset(
+                    'images/logo.png',
+                    filterQuality: FilterQuality.high,
+                    isAntiAlias: true,
+                    fit: BoxFit.fill,
+                  ),
                 ),
                 Align(
                   alignment: Alignment.topRight,

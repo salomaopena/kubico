@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kubico/models/orders/order.dart';
 import 'package:kubico/screens/orders/components/order_prodcut_tile.dart';
 
@@ -11,10 +12,10 @@ class ConfirmationScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title:  Text(
           'Pedido confirmado',
-          style: TextStyle(
-            fontSize: 20,
+          style: GoogleFonts.roboto(
+            fontSize: 18,
             color: Colors.pink,
             fontWeight: FontWeight.w700,
           ),

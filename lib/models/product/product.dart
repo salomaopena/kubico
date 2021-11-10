@@ -10,6 +10,7 @@ class Product extends ChangeNotifier {
   String category;
   List<String> images;
   List<ItemSize> sizes;
+  bool deleted;
 
   Product(
       {required this.id,
@@ -17,7 +18,8 @@ class Product extends ChangeNotifier {
       required this.description,
       required this.category,
       required this.images,
-      required this.sizes}) {
+      required this.sizes,
+      this.deleted = false}) {
     images = []..length;
     sizes = []..length;
   }
@@ -43,6 +45,7 @@ class Product extends ChangeNotifier {
         description = snapshot.get("description") as String,
         category = snapshot.get('category') as String,
         images = List<String>.from(snapshot.get("images") as List<dynamic>),
+        deleted = (snapshot.get('deleted') ?? false) as bool,
         sizes = (snapshot.get("sizes") as List<dynamic>)
             .map((size) => ItemSize.fromMap(size as Map<String, dynamic>))
             .toList();
@@ -62,15 +65,16 @@ class Product extends ChangeNotifier {
   num get basePrice {
     num lowest = double.infinity;
     for (final size in sizes) {
-      if (size.price < lowest && size.hasStock) {
+      if (size.price < lowest) {
         lowest = size.price;
       }
     }
     return lowest;
   }
 
+
   bool get hasStock {
-    return totalStock > 0;
+    return totalStock > 0 && !deleted;
   }
 
   ItemSize findSize(String name) {

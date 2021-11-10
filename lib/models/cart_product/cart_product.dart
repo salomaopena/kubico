@@ -19,7 +19,8 @@ class CartProduct extends ChangeNotifier {
     notifyListeners();
   }
 
-  CartProduct.fromDocument(DocumentSnapshot snapshot) {
+  CartProduct.fromDocument(DocumentSnapshot snapshot)
+      : assert(snapshot != null) {
     id = snapshot.id;
     productId = snapshot.get('product') as String;
     quantity = snapshot.get('quantity') as int;
@@ -27,14 +28,15 @@ class CartProduct extends ChangeNotifier {
 
     firestore.doc('product/$productId').get().then((document) {
       product = Product.fromDocument(document);
-      notifyListeners();
     });
   }
 
   CartProduct.fromProduct(this._product) {
-    productId = product.id as  String;
-    quantity = 1;
-    size = product.selectedSize.name;
+    if (_product != null) {
+      productId = product.id as String;
+      quantity = 1;
+      size = product.selectedSize.name;
+    }
   }
 
   CartProduct.fromMap(Map<String, dynamic> map) {

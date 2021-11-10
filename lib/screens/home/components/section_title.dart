@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kubico/utils/theme.dart';
 
 class SectionTitle extends StatelessWidget {
@@ -27,9 +28,9 @@ class SectionTitle extends StatelessWidget {
               flex: 70,
               child: Text(
                 title,
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
+                style: GoogleFonts.roboto(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
                   color: AppColors.black
                 ),
               ),
@@ -41,7 +42,7 @@ class SectionTitle extends StatelessWidget {
                 child: Text(
                   subtitle,
                   textAlign: TextAlign.end,
-                  style: TextStyle(
+                  style: GoogleFonts.roboto(
                     color: AppColors.darkGray,
                     fontWeight: FontWeight.w400
                   ),

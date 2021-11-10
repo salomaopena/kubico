@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kubico/models/users/user_manager.dart';
 import 'package:kubico/models/users/user_model.dart';
 import 'package:kubico/utils/theme.dart';
@@ -19,9 +20,13 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           "Criar conta",
-          style: TextStyle(fontSize: 17),
+          style: GoogleFonts.roboto(
+            fontSize: 18,
+            color: Colors.pink,
+            fontWeight: FontWeight.w700,
+          ),
         ),
         centerTitle: true,
       ),

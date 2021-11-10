@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kubico/models/page_manager/page_manager.dart';
 import 'package:kubico/utils/theme.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +41,7 @@ class DrawerTile extends StatelessWidget {
             Flexible(
                 child: Text(
               title,
-              style: TextStyle(
+              style: GoogleFonts.roboto(
                   color: currentPage == page ? Colors.pink: AppColors.black,
                   fontSize: 16),
             ))

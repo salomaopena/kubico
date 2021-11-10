@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:kubico/models/cart_product/cart_manager.dart';
 import 'package:kubico/screens/cart/components/price_card.dart';
 import 'package:kubico/screens/checkout/checkout_screen.dart';
@@ -14,10 +15,10 @@ class AddressScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Endereço de entrega',
-          style: TextStyle(
-            fontSize: 20,
+          style: GoogleFonts.roboto(
+            fontSize: 18,
             color: Colors.pink,
             fontWeight: FontWeight.w700,
           ),

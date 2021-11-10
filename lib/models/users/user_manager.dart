@@ -11,7 +11,7 @@ import 'package:kubico/utils/firebase_errors.dart';
 
 class UserManager extends ChangeNotifier {
   UserManager() {
-    retriviewUsers();
+    _retriviewUsers();
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -20,6 +20,8 @@ class UserManager extends ChangeNotifier {
   UserModel user;
   bool _loading = false;
   bool get loading => _loading;
+  bool _googleLoading = false;
+  bool get googleLoading => _googleLoading;
 
   bool get isLoggedIn => user != null;
 
@@ -36,6 +38,11 @@ class UserManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  set googleLoading(bool value) {
+    _googleLoading = value;
+    notifyListeners();
+  }
+
   Future<void> sigIn(
       {@required UserModel user,
       @required Function onFail,
@@ -46,7 +53,7 @@ class UserManager extends ChangeNotifier {
           await auth.signInWithEmailAndPassword(
               email: user.email, password: user.password);
 
-      await retriviewUsers(firestoreUser: userCredential.user);
+      await _retriviewUsers(firestoreUser: userCredential.user);
 
       onSuccess();
     } on FirebaseAuthException catch (error) {
@@ -55,34 +62,54 @@ class UserManager extends ChangeNotifier {
     loading = false;
   }
 
-  Future<void> googleSigin() async {
+  Future<UserCredential> signInWithGoogle(
+      {Function onFail, Function onSuccess}) async {
+    googleLoading = true;
     final GoogleSignIn googleSignIn = GoogleSignIn();
+    final GoogleSignInAccount googleUser = await googleSignIn.signIn();
 
-    if (googleSignIn != null) {
-      final GoogleSignInAccount googleSignInAccount =
-          await googleSignIn.signIn();
-      final GoogleSignInAuthentication googleSignInAuth =
-          await googleSignInAccount.authentication;
-      final AuthCredential authCredential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuth.idToken,
-          accessToken: googleSignInAuth.accessToken);
-      try {
-        final UserCredential userCredential =
-            await auth.signInWithCredential(authCredential);
-        await retriviewUsers(firestoreUser: userCredential.user);
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser?.authentication;
 
-        User user = auth.currentUser;
+    final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken, idToken: googleAuth?.idToken);
 
-        if (userCredential.additionalUserInfo.isNewUser) {
-          this.user.id = user.uid;
-          this.user.name = user.displayName;
-          this.user.phone = user.phoneNumber;
-          this.user.email = user.email;
-          await this.user.saveData();
-        }
-      } catch (error) {
-        debugPrint('Erro ao logar ==> $error');
+    try {
+      final UserCredential userCredential =
+          await auth.signInWithCredential(credential);
+
+      await _retriviewUsers(firestoreUser: userCredential.user);
+
+      User u = auth.currentUser;
+
+      if (userCredential.additionalUserInfo.isNewUser) {
+        user.id = u.uid;
+        user.name = u.displayName;
+        user.phone = u.phoneNumber;
+        user.email = u.email;
+
+        user.address = UserAddress(
+          street: 'default',
+          district: 'default',
+          city: 'default',
+          province: 'default',
+          country: 'Angola',
+          latitude: 14.123456,
+          longitude: -13.00098,
+        );
+
+        await user.saveData();
+
+        user.saveToken();
+
       }
+      googleLoading = false;
+      onSuccess();
+      return await userCredential;
+    } on FirebaseAuthException catch (error) {
+      googleLoading = false;
+      onFail(error);
+      return Future.error('Um erro inesperado aconteceu! $error');
     }
   }
 
@@ -103,13 +130,15 @@ class UserManager extends ChangeNotifier {
         city: 'default',
         province: 'default',
         country: 'Angola',
-        latitude: 1.1,
-        longitude: 1.1,
+        latitude: 14.123456,
+        longitude: -13.00098,
       );
 
       user = userModel;
 
       await user.saveData();
+
+      user.saveToken();
 
       onSuccess();
     } on FirebaseAuthException catch (error) {
@@ -118,22 +147,77 @@ class UserManager extends ChangeNotifier {
     loading = false;
   }
 
-  Future<void> retriviewUsers({User firestoreUser}) async {
+  Future<void> updateUser(
+      {UserModel user, Function onFail, Function onSuccess}) async {
+    loading = true;
+    try {
+      this.user = user;
+      await user.saveData();
+      onSuccess();
+      notifyListeners();
+    } on FirebaseAuthException catch (error) {
+      onFail(error.message);
+      loading = false;
+    }
+    loading = false;
+  }
+
+
+  Future<void> _retriviewUsers({User firestoreUser}) async {
     final User currentUser = firestoreUser ?? auth.currentUser;
+
     if (currentUser != null) {
-      await firestore.collection("users").get().then((querySnapshot) {
-        querySnapshot.docs.forEach((result) {
-          user = UserModel.fromDocument(result);
-          notifyListeners();
-        });
-      });
+      final DocumentSnapshot docUser =
+      await firestore.collection("users").doc(currentUser.uid).get();
+
+      user = UserModel.fromDocument(docUser);
+
+      user.saveToken();
+
+      notifyListeners();
     }
   }
 
   Future<void> signOut() async {
-    auth.signOut();
-    //await GoogleSignIn().disconnect();
-    user = null;
-    notifyListeners();
+    final GoogleSignIn googleSignIn = GoogleSignIn();
+    try {
+      if (!kIsWeb) {
+        await googleSignIn.signOut().whenComplete((){
+          debugPrint('Log Out com sucesso! ');
+        });
+      }
+      await auth.signOut();
+      user = null;
+      notifyListeners();
+    } on FirebaseAuthException catch (error) {
+      debugPrint('Erro ao fazer logout ${error}');
+    }
+  }
+
+
+  Future<void> deleteAccount({Function onError}) async {
+    try {
+      User user = await auth.currentUser;
+      await firestore.collection("users").doc(user.uid).delete();
+      await user.delete();
+      auth.signOut();
+      await GoogleSignIn().signOut();
+      this.user = null;
+      notifyListeners();
+    } on FirebaseAuthException catch (e) {
+      onError(e);
+    }
+  }
+
+  Future<void> resetPassword(
+      {String email, Function onSuccess, Function onError}) async {
+    loading = true;
+    await auth.sendPasswordResetEmail(email: email).whenComplete(() {
+      onSuccess();
+      loading = false;
+    }).onError((error, StackTrace stackTrace) {
+      loading = false;
+      onError(error);
+    });
   }
 }

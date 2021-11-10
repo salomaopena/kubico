@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:get/get.dart';
-import 'package:kubico/models/cart_product/CheckoutManager.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:kubico/models/cart_product/checkout_manager.dart';
 import 'package:kubico/models/cart_product/cart_manager.dart';
 import 'package:kubico/models/orders/order.dart';
 import 'package:kubico/screens/base/base_screen.dart';
 import 'package:kubico/screens/cart/cart_screen.dart';
 import 'package:kubico/screens/cart/components/price_card.dart';
+import 'package:kubico/screens/checkout/components/payment_card.dart';
 import 'package:kubico/screens/confirmation/confirmation_screen.dart';
 import 'package:kubico/utils/theme.dart';
 import 'package:provider/provider.dart';
@@ -24,10 +26,10 @@ class CheckoutScreen extends StatelessWidget {
             ..updateCart(cartManager as CartManager),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
+          title: Text(
             'Pagamento',
-            style: TextStyle(
-              fontSize: 20,
+            style: GoogleFonts.roboto(
+              fontSize: 18,
               color: Colors.pink,
               fontWeight: FontWeight.w700,
             ),
@@ -60,9 +62,10 @@ class CheckoutScreen extends StatelessWidget {
             }
             return ListView(
               children: [
+                PaymentCard(),
                 PriceCard(
                   textButton: 'Finalizar pedido',
-                  onPressed: () {
+                  onPressed: checkoutManager.isPaymentValid? () {
                     checkoutManager.checkout(onStockFail: (e) {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text("Informação: $e"),
@@ -73,7 +76,7 @@ class CheckoutScreen extends StatelessWidget {
                       Get.offAll(() => BaseScreen());
                       Get.to(() => ConfirmationScreen(order: order));
                     });
-                  },
+                  }:null,
                 )
               ],
             );
