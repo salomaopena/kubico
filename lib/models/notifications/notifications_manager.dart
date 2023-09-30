@@ -15,12 +15,10 @@ class NotificationsManager extends ChangeNotifier {
   bool get loading => _loading;
 
   void updateUser(UserModel user) {
-    this.user = user;
+    this.user = UserModel();
     notifications.clear();
     _subscription?.cancel();
-    if (user != null) {
-      _loadANotifications();
-    }
+    _loadANotifications();
   }
 
   set loading(bool value) {
@@ -32,7 +30,7 @@ class NotificationsManager extends ChangeNotifier {
     _subscription = firestore
         .collection('notifications')
         .where('user', isEqualTo: user.id)
-        .orderBy('date',descending: true)
+        .orderBy('date', descending: true)
         .snapshots()
         .listen((event) {
       notifications.clear();

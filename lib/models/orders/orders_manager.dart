@@ -1,12 +1,12 @@
 import 'dart:async';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:kubico/models/orders/order.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:kubico/models/users/user_model.dart';
 
 class OrdersManager extends ChangeNotifier {
   UserModel user = UserModel();
-  List<Order> orders = []..length;
+  List<UserOrder> orders = []..length;
   StreamSubscription? _subscription;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -14,12 +14,8 @@ class OrdersManager extends ChangeNotifier {
     this.user = user;
     orders.clear();
     _subscription?.cancel();
-    if (user != null) {
-      _listenToOrders();
-    }
+    _listenToOrders();
   }
-
-
 
   void _listenToOrders() {
     _subscription = firestore
@@ -29,13 +25,11 @@ class OrdersManager extends ChangeNotifier {
         .listen((event) {
       orders.clear();
       for (final doc in event.docs) {
-        orders.add(Order.fromDocument(doc));
+        orders.add(UserOrder.fromDocument(doc));
       }
       notifyListeners();
     });
   }
-
-
 
   @override
   void dispose() {
