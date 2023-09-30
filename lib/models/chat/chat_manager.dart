@@ -15,9 +15,7 @@ class ChatManager extends ChangeNotifier {
     this.user = user;
     messages.clear();
     _subscription?.cancel();
-    if (user != null) {
-      _listenToChat();
-    }
+    _listenToChat();
   }
 
   void _listenToChat() {
@@ -34,7 +32,6 @@ class ChatManager extends ChangeNotifier {
       notifyListeners();
     });
   }
-
 
   Future<void> sendMessage(UserModel userModel) async {
     user = userModel;

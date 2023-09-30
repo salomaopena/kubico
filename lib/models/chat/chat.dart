@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:kubico/models/users/user_manager.dart';
 import 'package:kubico/models/users/user_model.dart';
-
 
 class Chat {
   String? id;
@@ -76,7 +74,6 @@ class Chat {
       return 'Agora';
     }
   }
-
 
   @override
   String toString() {
