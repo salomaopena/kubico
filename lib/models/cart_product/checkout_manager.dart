@@ -42,7 +42,7 @@ class CheckoutManager extends ChangeNotifier {
       return;
     }
     //TODO:Processar o pagemanto
-    final order = Order.fromCartManager(cartManager);
+    final order = UserOrder.fromCartManager(cartManager);
     final orderId = await _getOrderId();
     order.orderId = orderId.toString();
     order.payment = payment;
@@ -75,7 +75,6 @@ class CheckoutManager extends ChangeNotifier {
     notifyListeners();
     return this.payment as String;
   }
-
 
   Future<int> _getOrderId() async {
     final ref = firestore.doc('config/ordercounter');
@@ -133,8 +132,4 @@ class CheckoutManager extends ChangeNotifier {
       }
     });
   }
-
-
-
-
 }
