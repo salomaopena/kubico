@@ -1,4 +1,3 @@
-//@dart=2.9
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -7,7 +6,7 @@ import 'package:kubico/models/stores/stores.dart';
 class StoresManager extends ChangeNotifier {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   List<Stores> stores = [];
-  Timer _timer;
+  Timer? _timer;
 
   StoresManager() {
     _loadStoresList();

@@ -5,7 +5,7 @@ import 'package:kubico/models/users/user_address.dart';
 
 enum Payment { money, tpa, transfer }
 
-class Order {
+class UserOrder {
   late String orderId;
   List<CartProduct> items = []..length;
   late num price;
@@ -19,16 +19,16 @@ class Order {
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  Order.fromCartManager(CartManager cartManager) {
+  UserOrder.fromCartManager(CartManager cartManager) {
     items = List.from(cartManager.items);
     price = cartManager.totalPrice;
     delivery = cartManager.deliveryPrice;
-    userId = cartManager.user.id;
-    name = cartManager.user.name;
+    userId = cartManager.user!.id!;
+    name = cartManager.user!.name!;
     address = cartManager.address as UserAddress;
   }
 
-  Order.fromDocument(DocumentSnapshot doc) {
+  UserOrder.fromDocument(DocumentSnapshot doc) {
     orderId = doc.id;
     items = (doc.get('items') as List<dynamic>).map((e) {
       return CartProduct.fromMap(e as Map<String, dynamic>);
@@ -60,7 +60,6 @@ class Order {
   String get formattedId => '#${orderId.padLeft(6, '0')}';
   String get statusText => status;
   String get dateText => getTimeAgoSinceDate(date!.toDate().toString());
-
 
   static String getPaymentText(int position) {
     switch (Payment.values[position].index) {
@@ -111,7 +110,6 @@ class Order {
       return 'Agora';
     }
   }
-
 
   @override
   String toString() {

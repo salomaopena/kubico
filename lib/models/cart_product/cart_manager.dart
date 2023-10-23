@@ -11,8 +11,8 @@ import 'package:kubico/models/users/user_model.dart';
 
 class CartManager extends ChangeNotifier {
   List<CartProduct> items = []..length;
-  late UserModel user;
-  UserAddress? address;
+  late UserModel user = UserModel();
+  UserAddress address = UserAddress();
 
   num productsPrice = 0.0;
   num deliveryPrice = 0.0;
@@ -38,10 +38,8 @@ class CartManager extends ChangeNotifier {
     productsPrice = 0.0;
     items.clear();
     removeAddress();
-    if (user != null) {
-      _loadCartItems();
-      _loadUserAddress();
-    }
+    _loadCartItems();
+    _loadUserAddress();
   }
 
   Future<void> _loadCartItems() async {
@@ -54,9 +52,9 @@ class CartManager extends ChangeNotifier {
 
   Future<void> _loadUserAddress() async {
     if (user.address != null &&
-        await calculateDelivey(user.address.latitude as double,
-            user.address.longitude as double)) {
-      address = user.address;
+        await calculateDelivey(user.address!.latitude as double,
+            user.address!.longitude as double)) {
+      address = user.address!;
       notifyListeners();
     }
   }
@@ -133,7 +131,7 @@ class CartManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isAddressValid => address != null && deliveryPrice > 0.0;
+  bool get isAddressValid => deliveryPrice > 0.0;
 
   Future<void> getAddress(
       {required double latitude, required double longitude}) async {
@@ -143,17 +141,15 @@ class CartManager extends ChangeNotifier {
       final add = await geoCode.reverseGeocoding(
           latitude: latitude, longitude: longitude);
 
-      if (add != null) {
-        address = UserAddress(
-          street: add.streetAddress,
-          district: add.streetAddress,
-          city: add.city,
-          province: add.region,
-          country: add.countryName,
-          latitude: latitude,
-          longitude: longitude,
-        );
-      }
+      address = UserAddress(
+        street: add.streetAddress,
+        district: add.streetAddress,
+        city: add.city,
+        province: add.region,
+        country: add.countryName,
+        latitude: latitude,
+        longitude: longitude,
+      );
       loading = false;
     } catch (error) {
       loading = false;
@@ -176,7 +172,7 @@ class CartManager extends ChangeNotifier {
   }
 
   void removeAddress() {
-    address = null;
+    address = UserAddress();
     deliveryPrice = 0.0;
     notifyListeners();
   }
@@ -208,10 +204,8 @@ class CartManager extends ChangeNotifier {
 
     Position position = await Geolocator.getCurrentPosition();
 
-    if (position != null) {
-      await getAddress(
-          latitude: position.latitude, longitude: position.longitude);
-    }
+    await getAddress(
+        latitude: position.latitude, longitude: position.longitude);
 
     return position;
   }
